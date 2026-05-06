@@ -3,8 +3,11 @@
     "description": "FXW DNS API by scraping",
     "type": "library",
     "require": {
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^7.10",
         "rdx/js-dom": "dev-master"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^8.0"
     },
     "autoload": {
         "psr-4": {

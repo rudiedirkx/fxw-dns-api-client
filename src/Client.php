@@ -23,6 +23,7 @@ class Client {
 	public $customer; // rdx\fxwdns\Customer
 	public $uri; // rdx\fxwdns\UriGen
 	public $domains = [];
+	public $log = [];
 
 	/**
 	 * Dependency constructor
@@ -278,6 +279,11 @@ class Client {
 			'allow_redirects' => [
 				'track_redirects' => true,
 			] + RedirectMiddleware::$defaultSettings,
+			'headers' => [
+				'origin' => 'https://cp.flexwebhosting.nl',
+				'referer' => 'https://cp.flexwebhosting.nl/login',
+				'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36',
+			],
 		]);
 
 		$this->setUpLog($stack);
@@ -289,21 +295,21 @@ class Client {
 	protected function setUpLog( HandlerStack $stack ) {
 		$stack->push(Middleware::tap(
 			function(Request $request, $options) {
-				$this->guzzle->log[] = [
+				$this->log[] = [
 					'time' => microtime(1),
 					'request' => strtoupper($request->getMethod()) . ' ' . $request->getUri(),
 				];
 			},
 			function(Request $request, $options, PromiseInterface $response) {
 				$response->then(function(Response $response) {
-					$log = &$this->guzzle->log[count($this->guzzle->log) - 1];
+					$log = &$this->log[count($this->log) - 1];
 					$log['time'] = microtime(1) - $log['time'];
 					$log['response'] = $response->getStatusCode();
 				});
 			}
 		));
 
-		$this->guzzle->log = [];
+		$this->log = [];
 	}
 
 }

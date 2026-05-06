@@ -1,3 +1,4 @@
+/composer.lock
 /vendor/
 /examples/env.php
 /examples/*.html
